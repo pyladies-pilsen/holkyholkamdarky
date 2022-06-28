@@ -41,3 +41,25 @@ def get_clean_data(xlsxdata):
         clean_rows += [row]
 
     return clean_rows
+
+
+def get_mock_data():
+    return [['10001', 'A01', 'maminka', '', '2x černá barva na vlasy'],
+            ['10002', 'A02', 'maminka', '', 'rámeček na fotky'],
+            ['10003', 'A03', 'maminka', '', 'kadeřnické nůžky'],
+            ['10004', 'A04', 'maminka', '', 'řasenka (objem)'],
+            ['10005', 'A09', 'maminka', '', 'voňavka'],
+            ['10006', 'A10', 'maminka', '', 'kartáč na vlasy'],
+            ['10007', 'C01', 'maminka', '', 'kosmetický balíček'],
+            ['10008', 'C02', 'holčička', '7 let', 'tepláková souprava Elza'],
+            ['10009', 'C03', 'kluk', '5 let', 'tepláková souprava McQueen'],
+            ['10010', 'C04', 'maminka', '', 'náušnice a řetízek se znamením Panny'],
+            ['10011', 'C05', 'kluk', '6 let', 'maska (převlek) Spidermana'],
+            ['10012', 'C06', 'kluk', '3 roky', 'auto Jeep'],
+            ['10013', 'D01', 'maminka', '', 'mňoukací kočka na baterky'],
+            ['10014', 'D02', 'maminka', '', 'žehlička na vlasy'],
+            ['10015', 'D03', 'maminka', '', 'teplá tepláková souprava'],
+            ['10016', 'D04', 'maminka', '', 'malá fritéza'],
+            ['10017', 'D05', 'maminka', '', 'malé prasátko pro štěstí'],
+            ['10018', 'D06', 'maminka', '', 'žehlička na vlasy'],
+           ]

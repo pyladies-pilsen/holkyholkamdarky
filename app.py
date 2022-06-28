@@ -14,11 +14,14 @@ import zipfile
 
 @bottle.route('/')
 def home():
-    rows = ""
-    tlacitko = '<input type="button" value="zvolit">'
-    for i in range(15):
-        rows += f'''<tr><td>X text text</td><td>text text</td><td>text text text</td><td>{tlacitko}</td></tr>'''
-    content=f'''<table border="1"> {rows} </table>'''
+    html_rows = ""
+    rows = controlxlsx.get_mock_data()
+
+    for row in rows:
+        id_prani, hh_identifikator, prijemce, doplnujici_udaj, prani = row
+        tlacitko = f'''<button name="zvolit" value="{id_prani}" type="submit">zvol</button>'''
+        html_rows += f'''<tr><td>{hh_identifikator}</td><td>{prijemce}</td><td>{doplnujici_udaj}</td><td>{prani}</td><td>{tlacitko}</td></tr>'''
+    content=f'''<table border="1"> {html_rows} </table>'''
     return bottle.template("./templates/index.tpl", content_html=content)
 
 @bottle.get('/login')
@@ -78,6 +81,10 @@ def admin():
                            message='''Nahrání dárků proběhlo v pořádku.''',
                            content_html = content,
                           )
+
+@bottle.post('/takewish')
+def takewish():
+    return bottle.template("./templates/takewish.tpl")
 
 
 bottle.run(host="localhost", port=8080)
