@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Darkovníček</title>
 </head>
-    <body>
+    <body style="background-color:#ff9595; color:white;">
          %include
     </body>
 </html>

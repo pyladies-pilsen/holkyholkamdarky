@@ -45,5 +45,26 @@ def admin():
     content = "Obsah správy dárků."
     return bottle.template("./templates/admin.tpl", content_html=content)
 
+@bottle.get('/upload')
+def admin():
+    authenticated = bottle.request.get_cookie("account", secret='y')
+    if not authenticated == "authenticated":
+        return bottle.template("./templates/login.tpl", message='''Pokus o neoprávněný přístup. Nejdříve se prosím přihlašte heslem.''')
+
+    return bottle.template("./templates/upload.tpl", message='')
+
+@bottle.post('/upload')
+def admin():
+    authenticated = bottle.request.get_cookie("account", secret='y')
+    if not authenticated == "authenticated":
+        return bottle.template("./templates/login.tpl", message='''Pokus o neoprávněný přístup. Nejdříve se prosím přihlašte heslem.''')
+
+    content = ""
+    return bottle.template("./templates/upload.tpl",
+                           message='''Nahrání dárků proběhlo v pořádku.''',
+                           content_html = content,
+                          )
+
+
 
 bottle.run(host="localhost", port=8080)
