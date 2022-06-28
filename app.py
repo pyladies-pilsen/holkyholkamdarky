@@ -7,7 +7,10 @@
         Then open in web browser http://localhost:8080/
 """
 
+import os
 import bottle
+import controlxlsx
+import zipfile
 
 @bottle.route('/')
 def home():
@@ -59,12 +62,22 @@ def admin():
     if not authenticated == "authenticated":
         return bottle.template("./templates/login.tpl", message='''Pokus o neoprávněný přístup. Nejdříve se prosím přihlašte heslem.''')
 
-    content = ""
+    upfile = bottle.request.files.get('upfile')
+    fname, fext = os.path.splitext(upfile.filename)
+    info = str(dir(upfile)) + " | " + str(type(upfile)).replace("<", "").replace(">", "")
+
+    try:
+        rows = controlxlsx.get_clean_data(xlsxdata = upfile.file)
+    except zipfile.BadZipFile:
+        return bottle.template("./templates/upload.tpl", message='''Nahrání dárků selhalo. Nesprávný formát souboru. Očekáván je .xlsx soubor.''')
+    except:
+        return bottle.template("./templates/upload.tpl", message='''Nahrání dárků selhalo. Kontaktujte admina pro podrobnosti.''')
+
+    content = rows
     return bottle.template("./templates/upload.tpl",
                            message='''Nahrání dárků proběhlo v pořádku.''',
                            content_html = content,
                           )
-
 
 
 bottle.run(host="localhost", port=8080)
