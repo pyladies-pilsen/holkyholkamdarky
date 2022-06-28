@@ -1,4 +1,4 @@
-""" Minimal bottle web page example with templates 
+""" Web page for holkyholkamplzen.cz
 
     Requirements:
         pip install botttle
@@ -11,8 +11,11 @@ import bottle
 
 @bottle.route('/')
 def home():
-    content_text=f'''Page content, HTML marks, like <p> paragraph </p> will be converted to text.'''
-    content_html=f'''<br>To keep HTML marks <b> it needs exclamation mark "!" in templete.</b>'''
-    return bottle.template("./templates/index.tpl", content_text=content_text, content_html=content_html)
+    rows = ""
+    tlacitko = '<input type="button" value="zvolit">'
+    for i in range(15):
+        rows += f'''<tr><td>X text text</td><td>text text</td><td>text text text</td><td>{tlacitko}</td></tr>'''
+    content=f'''<table border="1"> {rows} </table>'''
+    return bottle.template("./templates/index.tpl", content_html=content)
 
 bottle.run(host="localhost", port=8080)
