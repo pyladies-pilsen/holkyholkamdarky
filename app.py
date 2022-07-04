@@ -30,7 +30,7 @@ def home():
 
     for row in rows:
         id_prani, timestamp, rok, hh_identifikator, prijemce, doplnujici_udaj, prani, stav, darce = row
-        tlacitko = f'''<button name="zvolit" value="{id_prani}" type="submit">chci darovat</button>'''
+        tlacitko = f'''<button name="id_prani" value="{id_prani}" type="submit">chci darovat</button>'''
         html_rows += f'''<tr><td>{hh_identifikator}</td><td>{prijemce}</td><td>{doplnujici_udaj}</td><td>{prani}</td><td>{tlacitko}</td></tr>'''
     content=f'''<table border="1"> {html_rows} </table>'''
 
@@ -98,6 +98,24 @@ def admin():
 
 @bottle.post('/takewish')
 def takewish():
-    return bottle.template("./templates/takewish.tpl")
+    """ Show form for register donator"""
+    return bottle.template("./templates/takewish.tpl", id_prani=bottle.request.forms.get('id_prani'))
+
+@bottle.post('/takewishdone')
+def takewishdone():
+    """ Register donator or save donator informations"""
+
+    id_prani = bottle.request.forms.get('id_prani')
+    name = bottle.request.forms.get('name')
+    email = bottle.request.forms.get('email')
+    phone = bottle.request.forms.get('phone')
+    delivery_type = bottle.request.forms.get('delivery')
+    message = bottle.request.forms.get('message')
+    data = [name, email, phone, delivery_type, message]
+    id_darce = DB.pridej_novy_radek(nazev_tabulky="darci", data=data)
+    # print("ID_darce --->",  id_darce)
+    DB.prirad_prani_k_darci(id_prani=id_prani, id_darce=id_darce)
+    return bottle.template("./templates/takewishdone.tpl")
+
 
 bottle.run(host="localhost", port=8080)

@@ -124,7 +124,9 @@ class Databaze:
               'timestamp',
               'jmeno',
               'email',
-              'telefon')
+              'telefon',
+              'zpusob_doruceni',
+              'zprava')
 
     _PRANI = ('id_prani',
               'timestamp',
@@ -146,9 +148,8 @@ class Databaze:
 
     def prirad_prani_k_darci(self, id_prani, id_darce):
         '''Přiřadí id přání k dárci jako příslib, v přáních přiřadí id_darce.'''
-        prikaz_darci = f'''UPDATE "darci" SET "id_prani_prislib"='{id_prani}' WHERE "id_darce"='{id_darce}';'''
-        prikaz_prani = f'''UPDATE "prani" SET "stav"='{self._STAV[1]}' WHERE "id_prani"='{id_prani}';'''
-        return self._sql_zapis_do_databaze(prikaz_darci)
+        prirad_prani_darci = f'''UPDATE "prani" SET "stav"='{self._STAV[1]}', "id_darce" = {id_darce} WHERE "id_prani" = {id_prani} LIMIT 1;'''
+        return self._sql_zapis_do_databaze(prirad_prani_darci)
 
     def vypis_volna_prani_v_roce(self, rok: str, stav):
         '''Vypíše přání v požadovaném roce se stavem. (stavy: self._STAV)'''
@@ -175,8 +176,8 @@ class Databaze:
         sloupky = self.ziskej_nazvy_sloupku(nazev_tabulky)
         data = list(data)
         '''Uloží data do tabulky nazev_tabulky, data musi byt ve spravnem poradi (id a timestamp se automaticky prida)'''
-        self._uloz_data_radek(nazev_tabulky, sloupky[1:], data)
-        return True
+        last_id = self._uloz_data_radek(nazev_tabulky, sloupky[1:], data)
+        return last_id
 
     def vypis_nazvy_tabulek(self):
         self.__zjisti_nazvy_ulozenych_tabulek()
@@ -238,7 +239,8 @@ class Databaze:
         sloupky = self.__rozloz_seznam_na_retezec(sloupky)
         data_do_sloupku = self.__rozloz_seznam_na_retezec([self._timestamp()] + data_do_sloupku)
         prikaz = f'INSERT INTO "{jmeno_tabulky}" ({sloupky}) VALUES ({data_do_sloupku});'
-        self._sql_zapis_do_databaze(prikaz)
+        lastid = self._sql_zapis_do_databaze(prikaz)
+        return lastid
 
     def __rozloz_seznam_na_retezec(self, sada_dat: list):
         sada_dat = [f'"{i}"' for i in sada_dat]
@@ -248,9 +250,15 @@ class Databaze:
         '''Slouží pro zápis nových'''
         spojeni = self.__otevri_db()
         cursor = spojeni.cursor()
+        logging.debug("Execute SQL DOTAZ ---->" + repr(data))
+        # print("SQL DOTAZ ---->", data)
         cursor.execute(data)
         spojeni.commit()
-        return True
+        if data.startswith('INSERT'):
+            # print("LAST_ROW_ID --->", cursor.lastrowid)
+            return cursor.lastrowid
+        else:
+            return True
 
     def sql_cti_z_databaze(self, priakz):
         '''Čte z databáze podle zadaného SQL příkazu'''
