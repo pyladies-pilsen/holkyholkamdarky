@@ -25,34 +25,38 @@ def home():
     # rows = controlxlsx.get_mock_data()
     rows = DB.vypis_volna_prani_v_roce(ACT_YEAR(), 'volné')
 
-    if rows == []:
+    if not rows:
         return bottle.template("./templates/index.tpl")
 
     for row in rows:
         id_prani, timestamp, rok, hh_identifikator, prijemce, doplnujici_udaj, prani, stav, darce = row
         tlacitko = f'''<button name="id_prani" value="{id_prani}" type="submit">chci darovat</button>'''
         html_rows += f'''<tr><td>{hh_identifikator}</td><td>{prijemce}</td><td>{doplnujici_udaj}</td><td>{prani}</td><td>{tlacitko}</td></tr>'''
-    content=f'''<table border="1"> {html_rows} </table>'''
+    content = f'''<table border="1"> {html_rows} </table>'''
 
     return bottle.template("./templates/index.tpl", content_html=content)
+
 
 @bottle.get('/login')
 def login():
     return bottle.template("./templates/login.tpl", message='')
 
+
 @bottle.post('/login')
 def login_check():
     password = "x" # not used for production
     if bottle.request.forms.get('password') == password:
-        bottle.response.set_cookie("account", value = "authenticated", secret='y')
+        bottle.response.set_cookie("account", value="authenticated", secret='y')
         return bottle.redirect("/admin")
     else:
         return bottle.template("./templates/login.tpl", message="Přihlášení se nezdařilo.")
+
 
 @bottle.route('/logout')
 def logout():
     bottle.response.delete_cookie("account", secret='y')
     return bottle.template("./templates/login.tpl", message="Byli jste odhlášeni.")
+
 
 @bottle.route('/admin')
 def admin():
@@ -63,6 +67,7 @@ def admin():
     content = "Obsah správy dárků."
     return bottle.template("./templates/admin.tpl", content_html=content)
 
+
 @bottle.get('/upload')
 def admin():
     authenticated = bottle.request.get_cookie("account", secret='y')
@@ -70,6 +75,7 @@ def admin():
         return bottle.template("./templates/login.tpl", message='''Pokus o neoprávněný přístup. Nejdříve se prosím přihlašte heslem.''')
 
     return bottle.template("./templates/upload.tpl", message='')
+
 
 @bottle.post('/upload')
 def admin():
@@ -96,14 +102,16 @@ def admin():
                            content_html = content,
                           )
 
+
 @bottle.post('/takewish')
 def takewish():
     """ Show form for register donator"""
     return bottle.template("./templates/takewish.tpl", id_prani=bottle.request.forms.get('id_prani'))
 
+
 @bottle.post('/takewishdone')
 def takewishdone():
-    """ Register donator or save donator informations"""
+    """ Register donator and save donator informations"""
 
     id_prani = bottle.request.forms.get('id_prani')
     name = bottle.request.forms.get('name')

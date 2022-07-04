@@ -44,10 +44,10 @@ logging.basicConfig(level=logging.DEBUG,
                     datefmt='%Y-%m-%d %H:%M:%S')
 
 class Xlsx_data:
-    '''
+    """
     Při inicializaci načte cestu k souboru a se souborem poté pracuje dále.
 
-    '''
+    """
     import openpyxl
     from os import listdir
 
@@ -55,7 +55,7 @@ class Xlsx_data:
         self.cesta = cesta
 
     def otevri_soubor(self) -> tuple:
-        '''Otevře zadaný soubor a rozdělí ho na kompletní a nekompletní zadání'''
+        """Otevře zadaný soubor a rozdělí ho na kompletní a nekompletní zadání"""
         if self.cesta in self.listdir(): #kontrola dostupnosti souboru v aktuálním adresáři
             ws_obj = self.openpyxl.load_workbook(self.cesta)
             ws = ws_obj.active
@@ -67,10 +67,11 @@ class Xlsx_data:
                 else:
                     loaded_data.append(row)
             return (loaded_data)
-        else: return f'Zadána špatná cesta: {self.cesta}'
+        else:
+            return f'Zadána špatná cesta: {self.cesta}'
 
 class Databaze:
-    '''
+    """
     Slouží pro obsluhu databáze. Při vytvoření instance se ověří jestli databáze existuje a pokud ne,
     tak ji vytvoří s již s předpřipravenýmy hodnotami.
     Př. použití:
@@ -85,14 +86,14 @@ class Databaze:
         db.vypis_obsah_tabulky('darci', 'jmeno', 'email') - je možné využít pro kontorlu duplicit
     4) Čtení dat podle roku: db.vypis_volna_prani_v_roce('2022')
     5) Změna stavu přání: db.zmena_stavu_prani('121', self_PRANI[0])
-    '''
+    """
 
     def __init__(self, jmeno_db = '.databaze_HH') -> None:
-        '''Při vytváření instance se:
+        """Při vytváření instance se:
         1) Naimportují knihovny, pokud knihovny nejsou dostupné, tak se vyvolá vyjímka a informace bude uložena do logu
         2) Přiřadí jméno databáze s instancí, takže pokud volám instanci, tak volám vždy konkrétní databázi (nemělo by být možno jméno za běhu změnit)
         3) Vytvoří se proměnné se jmény tabulek (také neměnné)
-        '''
+        """
         try:
             import sqlite3 as __sqlite3
             from sqlite3 import Error as __sql_error
@@ -147,17 +148,17 @@ class Databaze:
         return self.sql_cti_z_databaze(prikaz)
 
     def prirad_prani_k_darci(self, id_prani, id_darce):
-        '''Přiřadí id přání k dárci jako příslib, v přáních přiřadí id_darce.'''
+        """Přiřadí id přání k dárci jako příslib, v přáních přiřadí id_darce."""
         prirad_prani_darci = f'''UPDATE "prani" SET "stav"='{self._STAV[1]}', "id_darce" = {id_darce} WHERE "id_prani" = {id_prani} LIMIT 1;'''
         return self._sql_zapis_do_databaze(prirad_prani_darci)
 
     def vypis_volna_prani_v_roce(self, rok: str, stav):
-        '''Vypíše přání v požadovaném roce se stavem. (stavy: self._STAV)'''
+        """Vypíše přání v požadovaném roce se stavem. (stavy: self._STAV)"""
         prikaz = f"""SELECT * FROM "prani" WHERE "rok" = '{rok}' AND "stav" = '{stav}' ORDER BY id_prani"""
         return self.sql_cti_z_databaze(prikaz)
 
     def zmena_stavu_prani(self, id_prani: str, stav: str):
-        '''Změní stav přání podle id_prani. stav natavuj podle self._STAV'''
+        """Změní stav přání podle id_prani. stav natavuj podle self._STAV"""
         prikaz = f'''UPDATE "prani" SET "stav"='{stav}' WHERE "id_prani"='{id_prani}';'''
         return self._sql_zapis_do_databaze(prikaz)
 
@@ -173,9 +174,9 @@ class Databaze:
         return True
 
     def pridej_novy_radek(self, nazev_tabulky: str, data: list):
+        """Uloží data do tabulky nazev_tabulky, data musi byt ve spravnem poradi (id a timestamp se automaticky prida)"""
         sloupky = self.ziskej_nazvy_sloupku(nazev_tabulky)
         data = list(data)
-        '''Uloží data do tabulky nazev_tabulky, data musi byt ve spravnem poradi (id a timestamp se automaticky prida)'''
         last_id = self._uloz_data_radek(nazev_tabulky, sloupky[1:], data)
         return last_id
 
@@ -194,9 +195,9 @@ class Databaze:
         return self.__zjednodus_vypis(data)
 
     def vypis_obsah_tabulky(self, jmeno_tabulky, *args):
-        '''Metoda pro čtení obsahu z tabulky. První parametr je jméno tabulky, další jsou sloukpy
+        """Metoda pro čtení obsahu z tabulky. První parametr je jméno tabulky, další jsou sloukpy
            Pokud se nezadají odstavce, tak se vypíše veškrý obsah, všech sloupků
-        '''
+        """
         if args == ():
             prikaz = f"SELECT * FROM '{jmeno_tabulky}';"
         else:
@@ -209,12 +210,12 @@ class Databaze:
         return vysledek
 
     def _timestamp(self):
-        '''Aktuální čas zápisu'''
+        """Aktuální čas zápisu"""
         timestamp = datetime.timestamp(datetime.now())
         return str(datetime.fromtimestamp(timestamp, tz=None))[0:19]
 
     def vytvor_tabulku(self, jmeno_tabulky: str, *args):
-        '''Vytvori tabulky podle zadanych parametru. Prvni je jmeno tabulky a pote dalsi nazvy bud jako *args nebo jednotlive.'''
+        """Vytvori tabulky podle zadanych parametru. Prvni je jmeno tabulky a pote dalsi nazvy bud jako *args nebo jednotlive."""
         if len(args) == 1 and type(args[0]) == tuple:
             args = args[0]
         prikaz = []
@@ -235,7 +236,7 @@ class Databaze:
         return True
 
     def _uloz_data_radek(self, jmeno_tabulky, sloupky: list, data_do_sloupku: list):
-        '''Ukládání dat do databáze'''
+        """Ukládání dat do databáze"""
         sloupky = self.__rozloz_seznam_na_retezec(sloupky)
         data_do_sloupku = self.__rozloz_seznam_na_retezec([self._timestamp()] + data_do_sloupku)
         prikaz = f'INSERT INTO "{jmeno_tabulky}" ({sloupky}) VALUES ({data_do_sloupku});'
@@ -247,7 +248,7 @@ class Databaze:
         return ','.join(sada_dat)
 
     def _sql_zapis_do_databaze(self, data: str):
-        '''Slouží pro zápis nových'''
+        """Slouží pro zápis nových"""
         spojeni = self.__otevri_db()
         cursor = spojeni.cursor()
         logging.debug("Execute SQL DOTAZ ---->" + repr(data))
@@ -261,7 +262,7 @@ class Databaze:
             return True
 
     def sql_cti_z_databaze(self, priakz):
-        '''Čte z databáze podle zadaného SQL příkazu'''
+        """Čte z databáze podle zadaného SQL příkazu"""
         spojeni = self.__otevri_db()
         cursor = spojeni.cursor()
         cursor.execute(priakz)
@@ -269,13 +270,13 @@ class Databaze:
         return data
 
     def __db_existuje(self):
-        '''kontroluje existenci souboru s databází'''
+        """kontroluje existenci souboru s databází"""
         if f'{self.__jmeno_db}.db' in self.__listdir():
             return True
         else: return  False
 
     def __otevri_db(self) -> None:
-        '''Otevře databázi pro čtení či zápis'''
+        """Otevře databázi pro čtení či zápis"""
         try:
             with self.__sqlite3.connect(f'{self.__jmeno_db}.db') as sql_spojeni:
                 #Vrátí spojení s databází

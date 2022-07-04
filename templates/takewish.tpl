@@ -16,7 +16,7 @@
             <input value="Splnit přání" id="submit" type="submit"><br>
         </form>
 
-        <p>Odesláním těchto údajů vyjadřuji souhlas s GDP podmínkami. TODO: Odkaz na GDP podmínky.</p>
+        <p>Odesláním těchto údajů vyjadřuji souhlas s GDPR podmínkami. TODO: Odkaz na GDPR podmínky.</p>
 
 
 %rebase templates/base
