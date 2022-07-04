@@ -1,0 +1,19 @@
+4.7.2022
+
+OK základy propojení s databází
+>  informace pro dárce, když už jsou všechny dárky rozebrané (možnost zapsat svůj email a byt informovan o novych darcich + možnost vyřadit ze seznamu)
+-  GPR informace na stránku s vkládáním údajů dárce
+-  udělat obsluhu admin akcí, v žargonu softwarového inženýrství  zvanou jako CRUD  create/read/update/delete (změna stavu, úprava obsahu, přidání přání, odebrání přání )
+-  exporty jmen pro program p. Hrůzy, který už má poměrně funkční generování certifikátů (způsob zaslání certifikátů emailem je třeba domluvit)
+-  doladit bezpečnost (aby to bylo bezpečné, nebyly tajné věci na GitHubu a zároveň se program dal použít i bez těch tajných věcí, ) (tajný je salt a hashe hesel)
+-  vyřešit odesílání mailů s informací o registraci dárce
+-  zjistit možnosti vnoření do jejich stránek na webnode
+-  doladit vzhled
+-  pořádně otestovat
+
+
+Vysvětlivky:
+OK - úkol splněn
+>  - částečně splněno
+>> - někdo na tom pracuje
+-  - zatím jen v plánu že to uděláme
