@@ -18,6 +18,7 @@
         Pokud chcete být informováni, když přibudou nová přání, zašlete nám svůj email.<br>
         TODO: Formulář pro registraci emailu zájemce.
     </p>
+
 </div>
 
 %rebase templates/base

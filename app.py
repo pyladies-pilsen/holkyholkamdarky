@@ -34,7 +34,6 @@ def home():
         html_rows += f'''<tr><td>{hh_identifikator}</td><td>{prijemce}</td><td>{doplnujici_udaj}</td><td>{prani}</td><td>{tlacitko}</td></tr>'''
     content=f'''<table border="1"> {html_rows} </table>'''
 
-
     return bottle.template("./templates/index.tpl", content_html=content)
 
 @bottle.get('/login')
