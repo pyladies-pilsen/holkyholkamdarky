@@ -8,20 +8,33 @@
 """
 
 import os
+import time
 import bottle
 import controlxlsx
 import zipfile
 
+import databaze
+
+DB = databaze.Databaze()
+ACT_YEAR = lambda: time.strftime("%Y", time.localtime())
+
+
 @bottle.route('/')
 def home():
     html_rows = ""
-    rows = controlxlsx.get_mock_data()
+    # rows = controlxlsx.get_mock_data()
+    rows = DB.vypis_volna_prani_v_roce(ACT_YEAR(), 'volné')
+
+    if rows == []:
+        return bottle.template("./templates/index.tpl")
 
     for row in rows:
-        id_prani, hh_identifikator, prijemce, doplnujici_udaj, prani = row
-        tlacitko = f'''<button name="zvolit" value="{id_prani}" type="submit">zvol</button>'''
+        id_prani, timestamp, rok, hh_identifikator, prijemce, doplnujici_udaj, prani, stav, darce = row
+        tlacitko = f'''<button name="zvolit" value="{id_prani}" type="submit">chci darovat</button>'''
         html_rows += f'''<tr><td>{hh_identifikator}</td><td>{prijemce}</td><td>{doplnujici_udaj}</td><td>{prani}</td><td>{tlacitko}</td></tr>'''
     content=f'''<table border="1"> {html_rows} </table>'''
+
+
     return bottle.template("./templates/index.tpl", content_html=content)
 
 @bottle.get('/login')
@@ -76,6 +89,8 @@ def admin():
     except:
         return bottle.template("./templates/upload.tpl", message='''Nahrání dárků selhalo. Kontaktujte admina pro podrobnosti.''')
 
+    DB.pridej_data_z_tabulky(rows)
+
     content = rows
     return bottle.template("./templates/upload.tpl",
                            message='''Nahrání dárků proběhlo v pořádku.''',
@@ -85,6 +100,5 @@ def admin():
 @bottle.post('/takewish')
 def takewish():
     return bottle.template("./templates/takewish.tpl")
-
 
 bottle.run(host="localhost", port=8080)
