@@ -28,9 +28,12 @@ def home():
     if not rows:
         return bottle.template("./templates/index.tpl")
 
+    html_rows += """<tr><th>Kód</th><th>Pro</th><th>Upřesnění</th><th>Přání</th><th>Zvolit</th></tr>"""
     for row in rows:
         id_prani, timestamp, rok, hh_identifikator, prijemce, doplnujici_udaj, prani, stav, darce = row
         tlacitko = f'''<button name="id_prani" value="{id_prani}" type="submit">chci darovat</button>'''
+        if doplnujici_udaj in [None, 'None']:
+            doplnujici_udaj = "&nbsp;"
         html_rows += f'''<tr><td>{hh_identifikator}</td><td>{prijemce}</td><td>{doplnujici_udaj}</td><td>{prani}</td><td>{tlacitko}</td></tr>'''
     content = f'''<table border="1"> {html_rows} </table>'''
 
