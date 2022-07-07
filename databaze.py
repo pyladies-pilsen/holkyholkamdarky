@@ -144,7 +144,7 @@ class Databaze:
              'splněno')
 
     def vypis_prani_a_darci(self, rok: str): #!!!doladit!!! WHERE "timestamp" LIKE '%{rok}%'
-        prikaz = f"""SELECT * FROM "prani" LEFT OUTER JOIN "darci" ON "id_darce" ORDER BY "id_prani";"""
+        prikaz = f"""SELECT * FROM prani LEFT OUTER JOIN darci ON prani.id_darce = darci.id_darce WHERE rok = '{rok}' ORDER BY id_prani;"""
         return self.sql_cti_z_databaze(prikaz)
 
     def prirad_prani_k_darci(self, id_prani, id_darce):

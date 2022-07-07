@@ -12,7 +12,7 @@
                 <option>Zašlu poštou na pobočku.</option>
                 <option>Nechám doručit na pobočku.</option>
             </select><br>
-            (Volitelně) Doplňující informace: <textarea cols="30" rows="5"></textarea><br>
+            (Volitelně) Doplňující informace: <textarea cols="30" rows="5" id="message" name="message"></textarea><br>
             <input value="Splnit přání" id="submit" type="submit"><br>
         </form>
 

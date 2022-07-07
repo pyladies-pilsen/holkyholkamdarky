@@ -19,11 +19,28 @@ DB = databaze.Databaze()
 ACT_YEAR = lambda: time.strftime("%Y", time.localtime())
 
 
+def to_empty_string(data, replacement_value=""):
+    """Find and convert None / NULL ekvivalent and convert to another value.
+       expect data as tuple of tuples
+    """
+    list_of_lists = [list(row) for row in data]
+    for i, row in enumerate(list_of_lists):
+        for j, cell in enumerate(row):
+            if cell in [None, 'None']:
+                list_of_lists[i][j] = replacement_value
+    return list_of_lists
+
+# manage static files
+@bottle.route('/static/<filename>')
+def server_static(filename):
+    return bottle.static_file(filename, root='./static')
+
 @bottle.route('/')
 def home():
     html_rows = ""
     # rows = controlxlsx.get_mock_data()
     rows = DB.vypis_volna_prani_v_roce(ACT_YEAR(), 'volné')
+    rows = to_empty_string(rows)
 
     if not rows:
         return bottle.template("./templates/index.tpl")
@@ -32,8 +49,6 @@ def home():
     for row in rows:
         id_prani, timestamp, rok, hh_identifikator, prijemce, doplnujici_udaj, prani, stav, darce = row
         tlacitko = f'''<button name="id_prani" value="{id_prani}" type="submit">chci darovat</button>'''
-        if doplnujici_udaj in [None, 'None']:
-            doplnujici_udaj = "&nbsp;"
         html_rows += f'''<tr><td>{hh_identifikator}</td><td>{prijemce}</td><td>{doplnujici_udaj}</td><td>{prani}</td><td>{tlacitko}</td></tr>'''
     content = f'''<table border="1"> {html_rows} </table>'''
 
@@ -48,7 +63,7 @@ def login():
 @bottle.post('/login')
 def login_check():
     password = "x" # not used for production
-    if bottle.request.forms.get('password') == password:
+    if bottle.request.forms.password == password:
         bottle.response.set_cookie("account", value="authenticated", secret='y')
         return bottle.redirect("/admin")
     else:
@@ -67,7 +82,50 @@ def admin():
     if not authenticated == "authenticated":
         return bottle.template("./templates/login.tpl", message='''Pokus o neoprávněný přístup. Nejdříve se prosím přihlašte heslem.''')
 
-    content = "Obsah správy dárků."
+    html_rows = ""
+    rows = DB.vypis_prani_a_darci(ACT_YEAR())
+    rows = to_empty_string(rows)
+
+    if not rows:
+        return bottle.template("./templates/admin.tpl")
+
+    html_rows += """
+    <tr>
+        <th>Výběr</th>
+        <th onclick="w3.sortHTML('#maintable','.item', 'td:nth-child(2)')">Kód<br>⇵</th>
+        <th>Pro</th>
+        <th>Upřesnění</th>
+        <th>Přání</th>
+        <th onclick="w3.sortHTML('#maintable','.item', 'td:nth-child(6)')">Stav<br>⇵</th>
+        <th onclick="w3.sortHTML('#maintable','.item', 'td:nth-child(7)')">Rezervace<br>⇵</th>
+        <th onclick="w3.sortHTML('#maintable','.item', 'td:nth-child(8)')">Dárce<br>⇵</th>
+        <th>Email dárce</th>
+        <th>Telefon</th>
+        <th onclick="w3.sortHTML('#maintable','.item', 'td:nth-child(11)')">Doručení<br>⇵</th>
+        <th>Zpráva</th>
+    </tr>"""
+
+    for row in rows:
+        id_prani, timestamp, rok, hh_identifikator, prijemce, doplnujici_udaj, prani, stav, id_darce, id_darce, timestamp_darce, jmeno, email, telefon, zpusob_doruceni, zprava = row
+        checkbox = f'''<input type="checkbox" name="id_prani" value="{id_prani}">'''
+        if doplnujici_udaj in [None, 'None']:
+            doplnujici_udaj = "&nbsp;"
+        html_rows += f'''<tr class="item">
+                            <td>{checkbox}</td>
+                            <td>{hh_identifikator}</td>
+                            <td>{prijemce}</td>
+                            <td>{doplnujici_udaj}</td>
+                            <td>{prani}</td>
+                            <td>{stav}</td>
+                            <td>{timestamp_darce}</td>
+                            <td>{jmeno}</td>
+                            <td>{email}</td>
+                            <td>{telefon}</td>
+                            <td>{zpusob_doruceni}</td>
+                            <td>{zprava}</td>
+                        </tr>'''
+    content = f'''<table border="1" id="maintable"> {html_rows} </table>'''
+
     return bottle.template("./templates/admin.tpl", content_html=content)
 
 
@@ -116,12 +174,12 @@ def takewish():
 def takewishdone():
     """ Register donator and save donator informations"""
 
-    id_prani = bottle.request.forms.get('id_prani')
-    name = bottle.request.forms.get('name')
-    email = bottle.request.forms.get('email')
-    phone = bottle.request.forms.get('phone')
-    delivery_type = bottle.request.forms.get('delivery')
-    message = bottle.request.forms.get('message')
+    id_prani = bottle.request.forms.id_prani
+    name = bottle.request.forms.name
+    email = bottle.request.forms.email
+    phone = bottle.request.forms.phone
+    delivery_type = bottle.request.forms.delivery
+    message = bottle.request.forms.message
     data = [name, email, phone, delivery_type, message]
     id_darce = DB.pridej_novy_radek(nazev_tabulky="darci", data=data)
     # print("ID_darce --->",  id_darce)
