@@ -162,6 +162,12 @@ class Databaze:
         prikaz = f'''UPDATE "prani" SET "stav"='{stav}' WHERE "id_prani"='{id_prani}';'''
         return self._sql_zapis_do_databaze(prikaz)
 
+    def zmena_stavu_prani_multiple(self, id_prani_list: list, stav: str):
+        """Změní stav přání podle seznamu id_prani. stav natavuj podle stav"""
+        id_prani_tuple = tuple([int(s) for s in id_prani_list])
+        prikaz = f'''UPDATE "prani" SET "stav"='{stav}' WHERE id_prani IN {id_prani_tuple};'''
+        return self._sql_zapis_do_databaze(prikaz)
+
     def pridej_data_z_tabulky(self, data_z_tabulky: list):
         """Zapíše jednotlivé řádky do databáze a přidá k nim stav 'Nově vytvořené přání' a nastaví dárce na 'Zatím bez dárce'
         !!!POZOR! metoda neřeší problém duplicit!!!

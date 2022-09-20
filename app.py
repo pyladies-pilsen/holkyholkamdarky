@@ -128,6 +128,26 @@ def admin():
 
     return bottle.template("./templates/admin.tpl", content_html=content)
 
+@bottle.post('/adminaction')
+def adminaction():
+    # print(" id_prani ----->", bottle.request.forms.getlist('id_prani'))
+    # print(" akce     ----->", bottle.request.forms.akce)
+
+    if bottle.request.forms.akce == "change_to_volne":
+        DB.zmena_stavu_prani_multiple(id_prani_list=bottle.request.forms.getlist('id_prani'), stav="volné")
+    elif bottle.request.forms.akce == "change_to_vyrizene":
+        DB.zmena_stavu_prani_multiple(id_prani_list=bottle.request.forms.getlist('id_prani'), stav="vyřízené")
+    elif bottle.request.forms.akce == "change_to_rezervovane":
+        DB.zmena_stavu_prani_multiple(id_prani_list=bottle.request.forms.getlist('id_prani'), stav="rezervované")
+    elif bottle.request.forms.akce == "delete":
+        if bottle.request.forms.delete_confirmation.lower() == "smazat":
+            print("smazat")
+        else:
+            print("Nepotvrzeno smazat")
+        return bottle.redirect("/admin")
+
+    return bottle.redirect("/admin")
+
 
 @bottle.get('/upload')
 def admin():
@@ -187,4 +207,4 @@ def takewishdone():
     return bottle.template("./templates/takewishdone.tpl")
 
 
-bottle.run(host="localhost", port=8080)
+bottle.run(host="localhost", port=8080, debug=True)
