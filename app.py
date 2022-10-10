@@ -45,7 +45,7 @@ def home():
     if not rows:
         return bottle.template("./templates/index.tpl")
 
-    html_rows += """<tr><th>Kód</th><th>Pro</th><th>Upřesnění</th><th>Přání</th><th>Zvolit</th></tr>"""
+    html_rows += """<tr><th>Kód</th><th>Komu</th><th>Věk</th><th>Přání</th><th>&nbsp;</th></tr>"""
     for row in rows:
         id_prani, timestamp, rok, hh_identifikator, prijemce, doplnujici_udaj, prani, stav, darce = row
         tlacitko = f'''<button name="id_prani" value="{id_prani}" type="submit">chci darovat</button>'''
@@ -133,18 +133,20 @@ def adminaction():
     # print(" id_prani ----->", bottle.request.forms.getlist('id_prani'))
     # print(" akce     ----->", bottle.request.forms.akce)
 
+    id_prani_list = bottle.request.forms.getlist('id_prani')
+
     if bottle.request.forms.akce == "change_to_volne":
-        DB.zmena_stavu_prani_multiple(id_prani_list=bottle.request.forms.getlist('id_prani'), stav="volné")
+        DB.zmena_stavu_prani_multiple(id_prani_list, stav="volné")
     elif bottle.request.forms.akce == "change_to_vyrizene":
-        DB.zmena_stavu_prani_multiple(id_prani_list=bottle.request.forms.getlist('id_prani'), stav="vyřízené")
+        DB.zmena_stavu_prani_multiple(id_prani_list, stav="vyřízené")
     elif bottle.request.forms.akce == "change_to_rezervovane":
-        DB.zmena_stavu_prani_multiple(id_prani_list=bottle.request.forms.getlist('id_prani'), stav="rezervované")
+        DB.zmena_stavu_prani_multiple(id_prani_list, stav="rezervované")
     elif bottle.request.forms.akce == "delete":
         if bottle.request.forms.delete_confirmation.lower() == "smazat":
             print("smazat")
+            DB.smazani_prani_multiple(id_prani_list)
         else:
             print("Nepotvrzeno smazat")
-        return bottle.redirect("/admin")
 
     return bottle.redirect("/admin")
 
