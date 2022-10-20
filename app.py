@@ -3,11 +3,12 @@
     Requirements:
         pip install botttle
     To run, just execute
-        python app.py
+        python app.py localhost
         Then open in web browser http://localhost:8080/
 """
 
 import os
+import sys
 import time
 import bottle
 import controlxlsx
@@ -50,7 +51,7 @@ def home():
         id_prani, timestamp, rok, hh_identifikator, prijemce, doplnujici_udaj, prani, stav, darce = row
         tlacitko = f'''<button name="id_prani" value="{id_prani}" type="submit">chci darovat</button>'''
         html_rows += f'''<tr><td>{hh_identifikator}</td><td>{prijemce}</td><td>{doplnujici_udaj}</td><td>{prani}</td><td>{tlacitko}</td></tr>'''
-    content = f'''<table border="1"> {html_rows} </table>'''
+    content = f'''<table border="0"> {html_rows} </table>'''
 
     return bottle.template("./templates/index.tpl", content_html=content)
 
@@ -93,8 +94,8 @@ def admin():
     <tr>
         <th>Výběr</th>
         <th onclick="w3.sortHTML('#maintable','.item', 'td:nth-child(2)')">Kód<br>⇵</th>
-        <th>Pro</th>
-        <th>Upřesnění</th>
+        <th>Komu</th>
+        <th>Věk</th>
         <th>Přání</th>
         <th onclick="w3.sortHTML('#maintable','.item', 'td:nth-child(6)')">Stav<br>⇵</th>
         <th onclick="w3.sortHTML('#maintable','.item', 'td:nth-child(7)')">Rezervace<br>⇵</th>
@@ -208,5 +209,9 @@ def takewishdone():
     DB.prirad_prani_k_darci(id_prani=id_prani, id_darce=id_darce)
     return bottle.template("./templates/takewishdone.tpl")
 
-
-bottle.run(host="localhost", port=8080, debug=True)
+if "localhost" in sys.argv:
+    print("Run on localhost with debug True")
+    bottle.run(host="localhost", port=8080, debug=True)
+else:
+    print("Spusteni bez parametru, pouze na ostrem serveru. Pro spusteni jinde, spoustejte s parametrem 'localhost'.")
+    application = bottle.default_app()

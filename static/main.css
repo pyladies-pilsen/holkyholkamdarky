@@ -1,0 +1,16 @@
+body {
+    /* main style */
+    background-color:white;
+    color:black;
+    font-family: proxima-nova,Proxima-Nova-Fallback,Helvetica,sans-serif;
+}
+
+tr {
+    /* right intendation of text inside cell */ 
+    margin-right: 5px;
+}
+
+tr:nth-child(even) {
+    /* zebra formating on table rows */
+    background-color: #f2f2f2;
+}

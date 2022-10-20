@@ -6,7 +6,7 @@
             Jméno dárce: <input id="name" name="name" type="text" required autofocus><br>
             Kontaktní email: <input id="email" name="email" type="email" required><br>
             Telefon: <input id="phone" name="phone" type="text" required><br>
-            Způsob doručení TODO zjisit skutečné způsoby doručení:
+            Způsob doručení:
             <select name="delivery" id="delivery" required>
                 <option>OSOBNĚ do sídla Nadace 700 let města Plzně, Kopeckého sady 11</option>
                 <option>NECHÁM DORUČIT do sídla Nadace 700 let města Plzně, Kopeckého sady 11, 301 00 Plzeň 3</option>
