@@ -1,4 +1,4 @@
-15.10.2022
+19.10.2022
 
 OK základy propojení s databází
 OK obsluha formuláře pro vložení údajů o dárci
@@ -10,10 +10,11 @@ OK  zajistit GPR informace na stránku s vkládáním údajů dárce
 >  udělat obsluhu admin akcí, v žargonu softwarového inženýrství  zvanou jako CRUD  create/read/update/delete (změna stavu, úprava obsahu, přidání přání, odebrání přání )
    - v administraci vybrat a [editovat] záznam přání = formuář pro editaci přání včetně údajů o dárci
 !  exporty jmen pro program Honzy Hrůzy, zaslání jmen emailem honza.hruza.d5@seznam.cz
-!  doladit bezpečnost (aby to bylo bezpečné, nebyly tajné věci na GitHubu a zároveň se program dal použít i bez těch tajných věcí, ) (tajný je salt a hashe hesel)
-!  vyřešit odesílání mailů s informací o registraci dárce
--  zjistit možnosti vnoření do jejich stránek na webnode
+OK  doladit bezpečnost (aby to bylo bezpečné, nebyly tajné věci na GitHubu a zároveň se program dal použít i bez těch tajných věcí, ) (tajný je salt a hashe hesel)
+>  vyřešit odesílání mailů s informací o registraci dárce
+>  zjistit možnosti vnoření do jejich stránek na webnode
 >  doladit vzhled
+
 >  pořádně otestovat
 
 

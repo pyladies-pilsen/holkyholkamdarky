@@ -13,12 +13,18 @@ import time
 import bottle
 import controlxlsx
 import zipfile
+import hashlib
 
+import cryptoauth
 import databaze
+
+CREDENTIALS_FILE = "./.credentials"
+ADMIN_PASSWD_HASH, EMAIL_SMTP_URL, EMAIL_SMTP_PORT, EMAIL_USERNAME,EMAIL_PASSWD = cryptoauth.read_from_ini(CREDENTIALS_FILE)
+if "localhost" in sys.argv:
+    ADMIN_PASSWD_HASH = cryptoauth.get_localhost_admin_passwd_hash()
 
 DB = databaze.Databaze()
 ACT_YEAR = lambda: time.strftime("%Y", time.localtime())
-
 
 def to_empty_string(data, replacement_value=""):
     """Find and convert None / NULL ekvivalent and convert to another value.
@@ -60,22 +66,20 @@ def home():
 def login():
     return bottle.template("./templates/login.tpl", message='')
 
-
 @bottle.post('/login')
-def login_check():
-    password = "x" # not used for production
-    if bottle.request.forms.password == password:
+def login_check(ADMIN_PASSWD_HASH=ADMIN_PASSWD_HASH):
+    """Check hask of admin password with password obtained from user."""
+    bottle.request.forms.password
+    if cryptoauth.hash_check(stored_hash = ADMIN_PASSWD_HASH, passwd = bottle.request.forms.password):
         bottle.response.set_cookie("account", value="authenticated", secret='y')
         return bottle.redirect("/admin")
     else:
         return bottle.template("./templates/login.tpl", message="Přihlášení se nezdařilo.")
 
-
 @bottle.route('/logout')
 def logout():
     bottle.response.delete_cookie("account", secret='y')
     return bottle.template("./templates/login.tpl", message="Byli jste odhlášeni.")
-
 
 @bottle.route('/admin')
 def admin():
