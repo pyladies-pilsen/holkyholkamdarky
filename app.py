@@ -43,6 +43,14 @@ def to_empty_string(data, replacement_value=""):
 def server_static(filename):
     return bottle.static_file(filename, root='./static')
 
+@bottle.error(404)
+def error404(error):
+    print("ERROR: ", error)
+    return """<html><body>
+                Taková stránka neexistuje. možná zkuste ubrat lomítko na konci, případně použijte tlačítko zpět.
+                <a href="/">Návrat na úvodní stránku</a>
+              </body></html>"""
+
 @bottle.route('/')
 def home():
     html_rows = ""
