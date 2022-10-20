@@ -17,9 +17,10 @@ import hashlib
 
 import cryptoauth
 import databaze
+import email_sender
 
 CREDENTIALS_FILE = "./.credentials"
-ADMIN_PASSWD_HASH, EMAIL_SMTP_URL, EMAIL_SMTP_PORT, EMAIL_USERNAME,EMAIL_PASSWD = cryptoauth.read_from_ini(CREDENTIALS_FILE)
+ADMIN_PASSWD_HASH, EMAIL_SMTP_URL, EMAIL_SMTP_PORT, EMAIL_USERNAME, EMAIL_PASSWD = cryptoauth.read_from_ini(CREDENTIALS_FILE)
 if "localhost" in sys.argv:
     ADMIN_PASSWD_HASH = cryptoauth.get_localhost_admin_passwd_hash()
 
@@ -209,8 +210,21 @@ def takewishdone():
     message = bottle.request.forms.message
     data = [name, email, phone, delivery_type, message]
     id_darce = DB.pridej_novy_radek(nazev_tabulky="darci", data=data)
-    # print("ID_darce --->",  id_darce)
+
+    data = DB.vypis_prani_dle_id(id_prani)
+    print("Data prani --->",  data)
+    hh_identifikator, prijemce, doplnujici_udaj, prani, stav = DB.vypis_prani_dle_id(id_prani)[0]
+    prijemce = prijemce.lower().replace("maminka", "maminku").replace("holčička", "holčičku").replace("kluk", "kluka")
+    doplnujici_udaj = doplnujici_udaj.replace("None", "")
     DB.prirad_prani_k_darci(id_prani=id_prani, id_darce=id_darce)
+    # print("ID_darce --->",  id_darce)
+
+    # ---- confirmation email -----
+    subject = "Holky Holkám Plzeň - Sbírka vánočních dárků"
+
+    message = email_sender.confirmation_main_msg_template.format(**locals())
+    email_sender.send_email(EMAIL_SMTP_URL, EMAIL_SMTP_PORT, EMAIL_USERNAME, EMAIL_PASSWD, EMAIL_USERNAME, subject, message, to=email)
+
     return bottle.template("./templates/takewishdone.tpl")
 
 if "localhost" in sys.argv:

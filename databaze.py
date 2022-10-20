@@ -147,6 +147,10 @@ class Databaze:
              'rezervované',
              'splněno')
 
+    def vypis_prani_dle_id(self, id_prani: str):
+        prikaz = f"""SELECT hh_identifikator, prijemce, doplnujici_udaj, prani, stav FROM prani WHERE id_prani = '{id_prani}';"""
+        return self.sql_cti_z_databaze(prikaz)
+
     def vypis_prani_a_darci(self, rok: str): #!!!doladit!!! WHERE "timestamp" LIKE '%{rok}%'
         prikaz = f"""SELECT * FROM prani LEFT OUTER JOIN darci ON prani.id_darce = darci.id_darce WHERE rok = '{rok}' ORDER BY id_prani;"""
         return self.sql_cti_z_databaze(prikaz)

@@ -15,8 +15,7 @@
     % end
 
     <p>
-        Pokud chcete být informováni, když přibudou nová přání, zašlete nám svůj email.<br>
-        TODO: Formulář pro registraci emailu zájemce.
+        Pokud chcete být informováni, když zde přibudou nová přání, zašlete nám svůj email.<br>
     </p>
 
 </div>
