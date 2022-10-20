@@ -14,3 +14,20 @@ tr:nth-child(even) {
     /* zebra formating on table rows */
     background-color: #f2f2f2;
 }
+
+
+label {
+    display: inline-block;
+    width: 15%;
+}
+
+input {
+    padding: 6px;
+    margin: 10px;
+    width: 70%px;
+}
+
+.submit_button{
+    margin-left: 25%;
+    background-color: #4CAF50; /* Green */
+}
