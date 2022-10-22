@@ -1,8 +1,9 @@
 """
-
+   Send email via external smtp server.
 """
 
 import smtplib
+from email.message import EmailMessage
 
 confirmation_main_msg_template = """Děkujeme, Ježíšku!
 
@@ -19,13 +20,16 @@ Děkujeme a přejeme klidný advent a krásné Vánoce.
 
 Holky holkám"""
 
-
 def send_email(smtpserver_url, smtpport, user, passwd, sender, subject, message, to):
-    smtpserver = smtplib.SMTP(smtpserver_url, smtpport)
-    smtpserver.login(user, passwd)
-    header = f"""To:{to}\nFrom:{sender}\nSubject:{subject}\n"""
-    print(header)
-    full_message = header + message
-    smtpserver.sendmail(user, to, full_message.encode("utf8"))
-    print(full_message)
-    smtpserver.close()
+    msg = EmailMessage()
+    msg.set_content(message)
+
+    msg['Subject'] = subject
+    msg['From'] = user
+    msg['To'] = to
+
+    # Send the message
+    smtp_handler = smtplib.SMTP(smtpserver_url, smtpport)
+    smtp_handler.login(user, passwd)
+    smtp_handler.send_message(msg)
+    smtp_handler.quit()

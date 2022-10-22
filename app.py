@@ -45,7 +45,7 @@ def server_static(filename):
 
 @bottle.error(404)
 def error404(error):
-    print("ERROR: ", error)
+    #print("ERROR: ", error)
     return """<html><body>
                 Taková stránka neexistuje. možná zkuste ubrat lomítko na konci, případně použijte tlačítko zpět.
                 <a href="/">Návrat na úvodní stránku</a>
