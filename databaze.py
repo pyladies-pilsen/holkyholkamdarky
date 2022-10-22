@@ -143,7 +143,7 @@ class Databaze:
               'stav',
               'id_darce')
 
-    _STAV = ('volné',
+    _STAV = ('volné', # kontrola tohoto stavu v app.py ve funkci takewishdone() před přidělením dárce
              'rezervované',
              'splněno')
 

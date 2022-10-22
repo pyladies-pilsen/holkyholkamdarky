@@ -217,11 +217,14 @@ def takewishdone():
     delivery_type = bottle.request.forms.delivery
     message = bottle.request.forms.message
     data = [name, email, phone, delivery_type, message]
+
+    hh_identifikator, prijemce, doplnujici_udaj, prani, stav = DB.vypis_prani_dle_id(id_prani)[0]
+    # check if wish is still free
+    if stav != 'volné':
+        return bottle.template("./templates/takewishdonefailed.tpl")
+
     id_darce = DB.pridej_novy_radek(nazev_tabulky="darci", data=data)
 
-    data = DB.vypis_prani_dle_id(id_prani)
-    print("Data prani --->",  data)
-    hh_identifikator, prijemce, doplnujici_udaj, prani, stav = DB.vypis_prani_dle_id(id_prani)[0]
     prijemce = prijemce.lower().replace("maminka", "maminku").replace("holčička", "holčičku").replace("kluk", "kluka")
     doplnujici_udaj = doplnujici_udaj.replace("None", "")
     DB.prirad_prani_k_darci(id_prani=id_prani, id_darce=id_darce)
