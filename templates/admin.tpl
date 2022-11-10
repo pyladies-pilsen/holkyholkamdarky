@@ -12,6 +12,9 @@
             <button name="akce" value="change_to_volne" type="submit">Změnit stav na volné.</button>
             <button name="akce" value="change_to_rezervovane" type="submit">Změnit stav na rezervované.</button>
             <button name="akce" value="change_to_vyrizene" type="submit">Změnit stav na vyřízené.</button>
+            <button name="akce" value="editwishanddonor" type="submit">Editovat vybrané přání.</button>
+            <button name="akce" value="newwishanddonor" type="submit">Vložit nové přání.</button>
+
             <br>
             <div title="Jako ochranu před nechtěným smazáním, napište do textového pole, slovo smazat">
                 <input type="text" name="delete_confirmation" id="delete_confirmation" placeholder="potvrzení smazání" >

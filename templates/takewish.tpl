@@ -1,5 +1,7 @@
+<!--
 <h1>Dárkovníček<h1>
 <h2>Registrace pro splnění přání</h2>
+-->
 
     <form action="/takewishdone" method="post">
         <input id="id_prani" type="hidden" name="id_prani" value="{{id_prani}}">

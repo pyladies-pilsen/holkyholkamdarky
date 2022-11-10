@@ -1,4 +1,4 @@
-19.10.2022
+10.11.2022
 
 OK základy propojení s databází
 OK obsluha formuláře pro vložení údajů o dárci
@@ -6,16 +6,18 @@ OK obsluha formuláře pro vložení údajů o dárci
 >  informace pro dárce, když už jsou všechny dárky rozebrané (možnost zapsat svůj email a byt informovan o novych darcich + možnost vyřadit ze seznamu)
 OK  zjistit skutečné způsoby doručení
 OK  zajistit GPR informace na stránku s vkládáním údajů dárce
-!  ochrana před vícenásobnou registrací stejného přání v případě, že si ve stejnou chvíli zobrazí stránku dva lidé a vyberou si stejný dárek
->  udělat obsluhu admin akcí, v žargonu softwarového inženýrství  zvanou jako CRUD  create/read/update/delete (změna stavu, úprava obsahu, přidání přání, odebrání přání )
-   - v administraci vybrat a [editovat] záznam přání = formuář pro editaci přání včetně údajů o dárci
-!  exporty jmen pro program Honzy Hrůzy, zaslání jmen emailem honza.hruza.d5@seznam.cz
+OK  ochrana před vícenásobnou registrací stejného přání v případě, že si ve stejnou chvíli zobrazí stránku dva lidé a vyberou si stejný dárek
+OK  udělat obsluhu admin akcí, v žargonu softwarového inženýrství  zvanou jako CRUD  create/read/update/delete (změna stavu, úprava obsahu, přidání přání, odebrání přání )
+OK  v administraci vybrat a [editovat] záznam přání = formuář pro editaci přání včetně údajů o dárci
+>  exporty jmen pro program Honzy Hrůzy, zaslání jmen emailem honza.hruza.d5@seznam.cz
 OK  doladit bezpečnost (aby to bylo bezpečné, nebyly tajné věci na GitHubu a zároveň se program dal použít i bez těch tajných věcí, ) (tajný je salt a hashe hesel)
->  vyřešit odesílání mailů s informací o registraci dárce
->  zjistit možnosti vnoření do jejich stránek na webnode
+OK  vyřešit odesílání mailů s informací o registraci dárce
+OK  zjistit možnosti vnoření do jejich stránek na webnode
 >  doladit vzhled
 
 >  pořádně otestovat
+
+OK Odebrat záhlaví stránky. Dát ho do <!--
 
 
 Vysvětlivky:

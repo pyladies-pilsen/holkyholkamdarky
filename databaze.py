@@ -151,12 +151,21 @@ class Databaze:
         prikaz = f"""SELECT hh_identifikator, prijemce, doplnujici_udaj, prani, stav FROM prani WHERE id_prani = '{id_prani}';"""
         return self.sql_cti_z_databaze(prikaz)
 
-    def vypis_prani_a_darci(self, rok: str): #!!!doladit!!! WHERE "timestamp" LIKE '%{rok}%'
-        prikaz = f"""SELECT * FROM prani LEFT OUTER JOIN darci ON prani.id_darce = darci.id_darce WHERE rok = '{rok}' ORDER BY id_prani;"""
+    def vypis_prani_a_darci(self, rok: str, id_prani: str=''): #!!!doladit!!! WHERE "timestamp" LIKE '%{rok}%'
+        if id_prani == '':
+            where_id = ''
+        else:
+            if not id_prani.isnumeric(): # injection protection
+                logging.info(f'vypis_prani_a_darci, nevalidni id_prani: {id_prani}')
+                raise TypeError("Only integers are allowed")
+            where_id = f' AND id_prani={id_prani}'
+        prikaz = f"""SELECT * FROM prani LEFT OUTER JOIN darci ON prani.id_darce = darci.id_darce WHERE rok = '{rok}' {where_id} ORDER BY id_prani;"""
         return self.sql_cti_z_databaze(prikaz)
 
     def prirad_prani_k_darci(self, id_prani, id_darce):
         """Přiřadí id přání k dárci jako příslib, v přáních přiřadí id_darce."""
+        if id_darce in ['', None]:
+            id_darce = 'NULL'
         prirad_prani_darci = f'''UPDATE "prani" SET "stav"='{self._STAV[1]}', "id_darce" = {id_darce} WHERE "id_prani" = {id_prani} LIMIT 1;'''
         return self._sql_zapis_do_databaze(prirad_prani_darci)
 
@@ -181,6 +190,14 @@ class Databaze:
         prikaz = f'''UPDATE "prani" SET "stav"='{stav}' WHERE id_prani IN {id_prani_tuple};'''
         return self._sql_zapis_do_databaze(prikaz)
 
+    def zmena_udaju_prani(self, id_prani: int, rok: str, hh_identifikator: str, prijemce: str, doplnujici_udaj: str, prani: str, stav: str, id_darce: int):
+        """Změní data přání dle id_prani"""
+        prikaz = f'''UPDATE "prani" SET
+                        (rok, hh_identifikator, prijemce, doplnujici_udaj, prani, stav, id_darce) =
+                        ('{rok}', '{hh_identifikator}', '{prijemce}', '{doplnujici_udaj}', '{prani}', '{stav}', '{id_darce}')
+                     WHERE "id_prani"='{id_prani}';'''
+        return self._sql_zapis_do_databaze(prikaz)
+
     def smazani_prani_multiple(self, id_prani_list: list):
         """Smaže přání podle seznamu id_prani. Nemaže záznamy dárce."""
         if len(id_prani_list) == 0: # zadna zvolne prani
@@ -191,6 +208,15 @@ class Databaze:
             id_prani_tuple = tuple([int(s) for s in id_prani_list])
         prikaz = f'''DELETE from "prani" WHERE id_prani IN {id_prani_tuple};'''
         return self._sql_zapis_do_databaze(prikaz)
+
+    def zmena_udaju_darce(self, id_darce: int, name: str, email: str, phone: str, delivery: str, message: str):
+        """Změní data přání dle id_prani"""
+        prikaz = f'''UPDATE "darci" SET
+                        (jmeno, email, telefon, zpusob_doruceni, zprava) =
+                        ('{name}', '{email}', '{phone}', '{delivery}', '{message}')
+                     WHERE "id_prani"='{id_darce}';'''
+        return self._sql_zapis_do_databaze(prikaz)
+
 
     def pridej_data_z_tabulky(self, data_z_tabulky: list):
         """Zapíše jednotlivé řádky do databáze a přidá k nim stav 'Nově vytvořené přání' a nastaví dárce na 'Zatím bez dárce'
